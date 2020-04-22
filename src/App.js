@@ -1,13 +1,17 @@
 import React from 'react';
 import axios from 'axios';
 import './App.css';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label } from 'recharts';
 
 let genLink = 'https://opendata.resas-portal.go.jp/api/v1/prefectures'
 let prefLink = 'https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?cityCode=-&prefCode='
 const key = '3ePPUxU72WKSjsz2CaP2T3h8rPDPqktKn0yj6Y7c'
 let config = {'X-API-KEY': key};
-let yearData = [{"year":1960},{"year":1965},{"year":1970},{"year":1975},{"year":1980},{"year":1985},{"year":1990},{"year":1995},{"year":2000},{"year":2005},{"year":2010},{"year":2015},{"year":2020},{"year":2025},{"year":2030},{"year":2035},{"year":2040},{"year":2045}]
+let yearData = [
+  {"year":1960},{"year":1965},{"year":1970},{"year":1975},{"year":1980},
+  {"year":1985},{"year":1990},{"year":1995},{"year":2000},{"year":2005},
+  {"year":2010},{"year":2015},{"year":2020},{"year":2025},{"year":2030},
+  {"year":2035},{"year":2040},{"year":2045}]
 const colorList = [
   "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
   "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
@@ -39,12 +43,12 @@ class Chart extends React.Component{
         data={this.props.data}
         margin={{ top: 30, right: 50, left: 50, bottom: 10 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year" label='年'/>
-        <YAxis 
-          label="人口数"
-          tickFormatter={(value) => 
-            new Intl.NumberFormat('en').format(value)}
-          />
+        <XAxis dataKey="year">
+          <Label value='年' offset={-10} position='insideBottomRight'/>
+        </XAxis>
+        <YAxis tickFormatter={(value) => new Intl.NumberFormat('en').format(value)}>
+          <Label value='人口数' offset={-20} position='insideTopLeft'/>
+        </YAxis>
         <Tooltip 
           formatter={(value) => 
             new Intl.NumberFormat('en').format(value)}/>
@@ -69,11 +73,9 @@ class App extends React.Component {
     axios.get(genLink, {headers: config}).then((response) => {
       let resultData = response.data.result 
       this.setState({prefData: resultData})
-      
     })
   }
   handleLoadData(event){
-    // This part handles loading of API data
     let regionIndex = Number(event.target.id.slice(5))
     let tempArr = this.state.data
     if(tempArr[0].hasOwnProperty('value'+regionIndex)){
