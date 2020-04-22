@@ -1,126 +1,125 @@
 import React from 'react';
+import axios from 'axios';
 import './App.css';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const numRegex = /[0-9]/
+let genLink = 'https://opendata.resas-portal.go.jp/api/v1/prefectures'
+let prefLink = 'https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?cityCode=-&prefCode='
+const key = '3ePPUxU72WKSjsz2CaP2T3h8rPDPqktKn0yj6Y7c'
+let config = {'X-API-KEY': key};
+let yearData = [{"year":1960},{"year":1965},{"year":1970},{"year":1975},{"year":1980},{"year":1985},{"year":1990},{"year":1995},{"year":2000},{"year":2005},{"year":2010},{"year":2015},{"year":2020},{"year":2025},{"year":2030},{"year":2035},{"year":2040},{"year":2045}]
+const colorList = [
+  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
+  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
+  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
+  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
+  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
+  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
+  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
+  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
+  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
+  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
+];
 
+class Chart extends React.Component{
+	render () {
+    const display = this.props.prefData? 
+          this.props.prefData.map((ele, index) => {
+            return(
+              <Line 
+                type="monotone" 
+                name={ele.prefName}
+                dataKey={'value'+Number(index+1)} 
+                stroke={colorList[index]} />
+            )
+          }) : ''
+  	return (
+      <ResponsiveContainer>
+      <LineChart 
+        data={this.props.data}
+        margin={{ top: 30, right: 50, left: 50, bottom: 10 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="year" label='年'/>
+        <YAxis 
+          label="人口数"
+          tickFormatter={(value) => 
+            new Intl.NumberFormat('en').format(value)}
+          />
+        <Tooltip 
+          formatter={(value) => 
+            new Intl.NumberFormat('en').format(value)}/>
+        {display}
+      </LineChart>
+      </ResponsiveContainer>
 
-//Main UI component displaying calculator
-class Calculator extends React.Component {
-  constructor(props) {
+    );
+  }
+}
+
+class App extends React.Component {
+  constructor(props){
     super(props)
     this.state = {
-      message: [],
-      results: []
+      data: yearData,
+      prefData: '',
     }
-    //Bind methods here
-    this.handleClick = this.handleClick.bind(this);
-    this.handleClear = this.handleClear.bind(this);
-    this.handleEval  = this.handleEval.bind(this);
+    this.handleLoadData = this.handleLoadData.bind(this)
   }
-  handleClear() {
-    this.setState({
-      message: [],
-      results: [0]
+  componentDidMount() {
+    axios.get(genLink, {headers: config}).then((response) => {
+      let resultData = response.data.result 
+      this.setState({prefData: resultData})
+      
     })
   }
-  handleClick(event) {
-    if (event.target.value == "backSpace") {
-      this.setState({
-          message: this.state.message.slice(0, -1)
-      })
+  handleLoadData(event){
+    // This part handles loading of API data
+    let regionIndex = Number(event.target.id.slice(5))
+    let tempArr = this.state.data
+    if(tempArr[0].hasOwnProperty('value'+regionIndex)){
+      for(let i=0; i<tempArr.length; i++){
+        delete tempArr[i]['value'+regionIndex]
+      }
+      this.setState({data: tempArr})
     }
-    else if (this.state.message.includes(".") && event.target.value == ".") {
-      //Do nothing when decimal is already present and next keyClick is decimal again
-    }
-    else if (!this.state.message.includes("=")){
-      this.setState({
-          message: this.state.message.concat(event.target.value),
-        })
-      console.log(typeof event.target.value)
-    }
-    else if (this.state.message.includes("=") && !numRegex.test(event.target.value)){
-      this.setState({
-          message: [this.state.results[this.state.results.length-1]].concat(event.target.value),
-          results: []
-      })
-    }
-    else {
-      this.setState({
-          message: [].concat(event.target.value),
-          results: []
+    else{
+      axios.get(prefLink+regionIndex, {headers: config}).then((response) => {
+        let resultData = response.data.result.data[0].data
+        
+        for(let i=0; i<tempArr.length; i++){
+          tempArr[i]['value'+regionIndex] = resultData[i].value
+        }
+        this.setState({data: tempArr})
       })
     }
   }
-  handleEval(event) {
-    let sum = eval(this.state.message.join(""))
-    
-    this.setState({
-      results: this.state.results.concat(sum),
-      message: this.state.message.concat(event.target.value).concat(sum)
-    })
-  }
-  render() {
-    return (
-      <div>
-        <div className="calculator">
-          <UpperScreen displayNumbers={this.state.message}/>
-          <LowerScreen displayResults={this.state.results[this.state.results.length-1]}/>
-          <Buttons 
-            handleClick={this.handleClick} 
-            handleClear={this.handleClear}
-            handleEval ={this.handleEval}/>
+  render(){
+    const display = this.state.prefData? 
+      this.state.prefData.map((ele, index) => {
+          return(
+            <span>
+              <input type="checkbox" 
+                onClick={this.handleLoadData} 
+                id={'value'+Number(index+1)} />
+              <label>{ele.prefName}</label>
+            </span>
+          )
+      }) : 'Loading buttons...'
+    return(
+      <div className='main'>
+        <p>都道府県人口構成 (1960-2045)</p>
+        <div className='chartSec'>
+        <Chart 
+          data={this.state.data}
+          prefData={this.state.prefData}
+          color={this.state.color}/>
         </div>
-        <p>Coded by Codey Du! 2019 November 21st</p>
-      </div>
-    )
-  }
-}
-//Component for buttons
-class Buttons extends React.Component {
-  render() {
-    return(
-      <div>
-        <button className="wideButton" onClick={this.props.handleClear}>AC</button>
-        <button value="/" onClick={this.props.handleClick}>/</button>
-        <button value="*" onClick={this.props.handleClick}>x</button>
-        <button value="7" onClick={this.props.handleClick}>7</button>
-        <button value="8" onClick={this.props.handleClick}>8</button>
-        <button value="9" onClick={this.props.handleClick}>9</button>
-        <button value="-" onClick={this.props.handleClick}>-</button>
-        <button value="4" onClick={this.props.handleClick}>4</button>
-        <button value="5" onClick={this.props.handleClick}>5</button>
-        <button value="6" onClick={this.props.handleClick}>6</button>
-        <button value="+" onClick={this.props.handleClick}>+</button>
-        <button value="1" onClick={this.props.handleClick}>1</button>
-        <button value="2" onClick={this.props.handleClick}>2</button>
-        <button value="3" onClick={this.props.handleClick}>3</button>
-        <button value="backSpace" onClick={this.props.handleClick}>Back Space</button>
-        <button className="wideButton" value="0" onClick={this.props.handleClick}>0</button>
-        <button value="." onClick={this.props.handleClick}>.</button>
-        <button value="=" onClick={this.props.handleEval}>=</button>
-      </div>
-    )
-  }
-}
-//Component for upper screen displaying formula
-class UpperScreen extends React.Component {
-  render() {
-    return(
-      <div>
-        <h1>{this.props.displayNumbers}</h1>
-      </div>
-    )
-  }
-}
-//Component for lower screen displaying results
-class LowerScreen extends React.Component {
-  render() {
-    return(
-      <div>
-        <h1>{this.props.displayResults}</h1>
+        <div className='buttonSec'>        
+          {display}
+        </div>
       </div>
     )
   }
 }
 
-export default Calculator;
+export default App;
