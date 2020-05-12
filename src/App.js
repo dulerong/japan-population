@@ -1,64 +1,16 @@
 import React from 'react';
 import axios from 'axios';
 import './App.css';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label } from 'recharts';
+import Chart from './components/Chart.js'
 
 let genLink = 'https://opendata.resas-portal.go.jp/api/v1/prefectures'
 let prefLink = 'https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?cityCode=-&prefCode='
-const key = '3ePPUxU72WKSjsz2CaP2T3h8rPDPqktKn0yj6Y7c'
-let config = {'X-API-KEY': key};
+let config = {'X-API-KEY': process.env.REACT_APP_API_KEY};
 let yearData = [
   {"year":1960},{"year":1965},{"year":1970},{"year":1975},{"year":1980},
   {"year":1985},{"year":1990},{"year":1995},{"year":2000},{"year":2005},
   {"year":2010},{"year":2015},{"year":2020},{"year":2025},{"year":2030},
   {"year":2035},{"year":2040},{"year":2045}]
-const colorList = [
-  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
-  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
-  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
-  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
-  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
-  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
-  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
-  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
-  "#ff0000",  "#ffff00",  "#00ff00", "#00fff0", "#0000ff",  
-  "#8800ff",  "#ff00e6",  "#ff7b00", "#00ff6a", "#0088ff",
-];
-
-class Chart extends React.Component{
-	render () {
-    const display = this.props.prefData? 
-          this.props.prefData.map((ele, index) => {
-            return(
-              <Line 
-                type="monotone" 
-                name={ele.prefName}
-                dataKey={'value'+Number(index+1)} 
-                stroke={colorList[index]} />
-            )
-          }) : ''
-  	return (
-      <ResponsiveContainer>
-      <LineChart 
-        data={this.props.data}
-        margin={{ top: 30, right: 50, left: 50, bottom: 10 }}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year">
-          <Label value='年' offset={-10} position='insideBottomRight'/>
-        </XAxis>
-        <YAxis tickFormatter={(value) => new Intl.NumberFormat('en').format(value)}>
-          <Label value='人口数' offset={-20} position='insideTopLeft'/>
-        </YAxis>
-        <Tooltip 
-          formatter={(value) => 
-            new Intl.NumberFormat('en').format(value)}/>
-        {display}
-      </LineChart>
-      </ResponsiveContainer>
-
-    );
-  }
-}
 
 class App extends React.Component {
   constructor(props){
@@ -99,7 +51,7 @@ class App extends React.Component {
     const display = this.state.prefData? 
       this.state.prefData.map((ele, index) => {
           return(
-            <span>
+            <span key={index}>
               <input type="checkbox" 
                 onClick={this.handleLoadData} 
                 id={'value'+Number(index+1)} />
