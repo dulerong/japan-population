@@ -31,13 +31,13 @@ class Chart extends React.Component{
       <ResponsiveContainer>
       <LineChart 
         data={this.props.data}
-        margin={{ top: 30, right: 50, left: 50, bottom: 10 }}>
+        margin={{ top: 30, right: 20, left: 50, bottom: 10 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="year">
           <Label value='年' offset={-10} position='insideBottomRight'/>
         </XAxis>
         <YAxis tickFormatter={(value) => new Intl.NumberFormat('en').format(value)}>
-          <Label value='人口数' offset={-20} position='insideTopLeft'/>
+          <Label value='人口数' offset={15} position='top'/>
         </YAxis>
         <Tooltip 
           formatter={(value) => 

@@ -16,16 +16,17 @@ body {
   justify-content: space-around;
   align-items: center;
   width: 800px;
-  height: 550px;
+  height: 100vh;
   border: solid #a1aba2 2px;
+  box-sizing: border-box;
 }
-.chartSec{
+.main .chartSec{
   width: 750px;
   height: 300px;
   margin: 0;
   padding-right: 70px;
 }
-.buttonSec{
+.main .buttonSec{
   width: 600px;
   border: solid #a1aba2 2px;
   border-radius: 10px;
@@ -34,7 +35,41 @@ body {
   display: grid;
   grid-template-columns: 100px 100px 100px 100px 100px 100px;
 }
-p {
+h1 {
   margin: 0;
   padding: 0;
+}
+
+@media (max-width: 800px) {
+  .main {
+    width: 600px;
+    border: none;
+  }
+  .main .chartSec {
+    width: 600px;
+  }
+  .main .buttonSec {
+    width: 500px;
+    grid-template-columns: 100px 100px 100px 100px 100px
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 20px;
+  }
+  .main {
+    width: 350px;
+    height: auto;
+    margin-top: 30px;
+  }
+  .main .chartSec {
+    width: 350px;
+    padding-right: 50px;
+  }
+  .main .buttonSec {
+    width: auto;
+    grid-template-columns: 85px 85px 85px 85px;
+    border: none;
+  }
 }

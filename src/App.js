@@ -48,20 +48,10 @@ class App extends React.Component {
     }
   }
   render(){
-    const display = this.state.prefData? 
-      this.state.prefData.map((ele, index) => {
-          return(
-            <span key={index}>
-              <input type="checkbox" 
-                onClick={this.handleLoadData} 
-                id={'value'+Number(index+1)} />
-              <label>{ele.prefName}</label>
-            </span>
-          )
-      }) : 'Loading buttons...'
+
     return(
       <div className='main'>
-        <p>都道府県人口構成 (1960-2045)</p>
+        <h1>都道府県人口構成 (1960-2045)</h1>
         <div className='chartSec'>
         <Chart 
           data={this.state.data}
@@ -69,7 +59,16 @@ class App extends React.Component {
           color={this.state.color}/>
         </div>
         <div className='buttonSec'>        
-          {display}
+          {this.state.prefData? this.state.prefData.map((ele, index) => {
+            return(
+              <span key={index}>
+                <input type="checkbox" 
+                  onClick={this.handleLoadData} 
+                  id={'value'+Number(index+1)} />
+                <label>{ele.prefName}</label>
+              </span>
+            )
+          }) : 'Loading buttons...'}
         </div>
       </div>
     )
