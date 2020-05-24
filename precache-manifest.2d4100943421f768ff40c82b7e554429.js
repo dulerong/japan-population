@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "a353225d7daaecbd5d5559ae6c3f3eaf",
+    "revision": "3686acdabd72985aacc067156de03766",
     "url": "/japan-population/index.html"
   },
   {
-    "revision": "37ea536eef9c4a94f3ec",
-    "url": "/japan-population/static/css/main.81a91b9d.chunk.css"
+    "revision": "c611e1e1722c1d020073",
+    "url": "/japan-population/static/css/main.af792747.chunk.css"
   },
   {
     "revision": "53870b3aa0ce9cce1d73",
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/japan-population/static/js/2.5440ba11.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "37ea536eef9c4a94f3ec",
-    "url": "/japan-population/static/js/main.09cf05c3.chunk.js"
+    "revision": "c611e1e1722c1d020073",
+    "url": "/japan-population/static/js/main.f4008150.chunk.js"
   },
   {
     "revision": "6eed29ce75eaeadeeb1a",

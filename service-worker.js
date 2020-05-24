@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/japan-population/precache-manifest.98ef5873a1ef244bde4f75e6c4bae3fb.js"
+  "/japan-population/precache-manifest.2d4100943421f768ff40c82b7e554429.js"
 );
 
 self.addEventListener('message', (event) => {
